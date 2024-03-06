@@ -19,4 +19,16 @@ if(!cached) {
 // 如果缓存conn连接存在，则返回缓存，连接并推出
 export const connectToDatabase = async () => {
     if(cached.conn) return cached.conn;
+
+    if(!MONGODB_URL) throw new Error('Missing MONGODB_URL');
+
+    cached.promise = 
+        cached.promise || 
+        mongoose.connect(MONGODB_URL, { 
+            dbName: 'ImageSaas', bufferCommands: false 
+        })
+
+    cached.conn = await cached.promise;
+
+    return cached.conn;
 }
